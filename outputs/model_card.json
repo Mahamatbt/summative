@@ -1,0 +1,13 @@
+{
+  "dataset": "NaijaSenti Hausa v1.0",
+  "license": "CC BY 4.0",
+  "labels": [
+    "negative",
+    "neutral",
+    "positive"
+  ],
+  "selected_model": "Character (3-5) + Linear SVM",
+  "model_description": "Character 3-5 gram TF-IDF with a class-balanced linear support-vector machine",
+  "test_macro_f1": 0.7648743171674175,
+  "test_accuracy": 0.7657929473882708
+}

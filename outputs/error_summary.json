@@ -1,0 +1,7 @@
+{
+  "overall_error_rate": 0.23420705261172922,
+  "total_errors": 1242,
+  "test_items": 5303,
+  "highest_error_class": "neutral",
+  "notes": "Slices are surface-form indicators, not causal explanations or validated linguistic categories."
+}

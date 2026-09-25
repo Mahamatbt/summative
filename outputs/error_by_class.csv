@@ -1,0 +1,4 @@
+label,items,errors,error_rate
+positive,1755,255,0.145299
+neutral,1789,613,0.342650
+negative,1759,374,0.212621

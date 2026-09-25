@@ -1,0 +1,53 @@
+{
+  "selected_model": "Character (3-5) + Linear SVM",
+  "selection_rule": "highest validation macro-F1; test evaluated once after refit on train+dev",
+  "accuracy": 0.7657929473882708,
+  "macro_precision": 0.7671706426441031,
+  "macro_recall": 0.7664768408499204,
+  "macro_f1": 0.7648743171674175,
+  "weighted_f1": 0.7644720853829496,
+  "classification_report": {
+    "negative": {
+      "precision": 0.7080777096114519,
+      "recall": 0.7873791927231382,
+      "f1-score": 0.7456258411843876,
+      "support": 1759.0
+    },
+    "neutral": {
+      "precision": 0.7587096774193548,
+      "recall": 0.6573504751257686,
+      "f1-score": 0.7044025157232704,
+      "support": 1789.0
+    },
+    "positive": {
+      "precision": 0.8347245409015025,
+      "recall": 0.8547008547008547,
+      "f1-score": 0.8445945945945946,
+      "support": 1755.0
+    },
+    "accuracy": 0.7657929473882708,
+    "macro avg": {
+      "precision": 0.7671706426441031,
+      "recall": 0.7664768408499204,
+      "f1-score": 0.7648743171674175,
+      "support": 5303.0
+    },
+    "weighted avg": {
+      "precision": 0.7670718222500296,
+      "recall": 0.7657929473882708,
+      "f1-score": 0.7644720853829496,
+      "support": 5303.0
+    }
+  },
+  "split_rows_after_deduplication": {
+    "train": 14172,
+    "validation": 2677,
+    "test": 5303,
+    "train_plus_validation": 16849
+  },
+  "runtime": {
+    "python": "3.13.0",
+    "scikit_learn": "1.8.0",
+    "platform": "macOS-26.5.2-arm64-arm-64bit-Mach-O"
+  }
+}

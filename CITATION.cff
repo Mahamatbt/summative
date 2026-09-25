@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use HausaLens, cite this repository and the original NaijaSenti dataset."
+title: "HausaLens: Lightweight sentiment classification for Hausa social-media text"
+type: software
+version: 1.0.0
+date-released: 2026-09-25
+license: MIT
+repository-code: "https://github.com/Mahamatbt/hausalens"
+url: "https://hausalens.streamlit.app"
+keywords:
+  - Hausa
+  - sentiment analysis
+  - African NLP
+  - text classification
+references:
+  - type: conference-paper
+    title: "NaijaSenti: A Nigerian Twitter Sentiment Corpus for Multilingual Sentiment Analysis"
+    authors:
+      - family-names: Muhammad
+        given-names: Shamsuddeen Hassan
+      - family-names: Adelani
+        given-names: David Ifeoluwa
+      - family-names: Ruder
+        given-names: Sebastian
+    year: 2022
+    conference:
+      name: "LREC 2022"
+    url: "https://aclanthology.org/2022.lrec-1.63/"
+

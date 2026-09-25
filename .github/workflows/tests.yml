@@ -1,0 +1,29 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  reproducibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt pytest matplotlib seaborn
+      - run: pytest -q
+      - run: python scripts/download_data.py
+      - run: MPLBACKEND=Agg python scripts/train.py
+      - run: MPLBACKEND=Agg python scripts/analyze_errors.py
+      - name: Confirm reported result remains reproducible
+        run: |
+          python - <<'PY'
+          import json
+          metrics = json.load(open("outputs/test_metrics.json"))
+          assert metrics["macro_f1"] > 0.75, metrics
+          assert metrics["selected_model"].startswith("Character"), metrics
+          PY
+

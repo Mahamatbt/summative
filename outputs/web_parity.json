@@ -1,0 +1,9 @@
+{
+  "artifact_sha256": "4d24635ab5e2ead1bc4fc2fb735a7b7d60f4008854d8de1f9812b4d303729839",
+  "test_examples": 5303,
+  "additional_edge_cases": 9,
+  "prediction_mismatches": 0,
+  "normalization_mismatches": 0,
+  "maximum_absolute_margin_difference": 6.661338147750939e-15,
+  "purpose": "Implementation parity only; no model selection, training, or tuning on test data."
+}

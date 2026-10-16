@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Explore sentiment in Hausa with a classifier trained on real NaijaSenti data. An African NLP capstone with reproducible experiments and transparent predictions.">
+  <title>HausaLens · Hausa sentiment explorer</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="./">◉ HausaLens</a><nav aria-label="Project"><a href="https://github.com/Mahamatbt/summative">Source code ↗</a><a href="https://github.com/Mahamatbt/summative/blob/main/output/pdf/hausalens_capstone_report.pdf">Research report ↗</a></nav></header>
+  <main>
+    <section class="hero">
+      <div class="eyebrow">AFRICAN NLP · HAUSA</div>
+      <h1>A closer look at<br>Hausa sentiment.</h1>
+      <p>Explore how a trained machine-learning model reads positive, neutral, and negative sentiment in social-media text.</p>
+      <div class="chips"><span>Real, human-annotated data</span><span>Private, in-browser inference</span><span>No external AI API</span></div>
+    </section>
+    <div class="workspace">
+      <section class="panel input-panel" aria-labelledby="input-title">
+        <div class="eyebrow">TRY IT YOURSELF</div><h2 id="input-title">What does your message express?</h2>
+        <p class="muted">Choose an example or write a Hausa message below.</p>
+        <div class="examples" aria-label="Examples"><button type="button" data-example="positive">Positive</button><button type="button" data-example="neutral">Neutral</button><button type="button" data-example="negative">Negative</button><button type="button" data-example="failure">Known test-set error</button></div>
+        <form id="classify-form">
+          <label for="message">Hausa text</label>
+          <textarea id="message" lang="ha" rows="5" maxlength="1000" placeholder="Rubuta saƙonka a nan…">Allah ya saka da alheri, na gode sosai!</textarea>
+          <div class="input-note"><span>Your text stays in this browser.</span><span id="count">0 / 1000</span></div>
+          <button class="primary" id="analyze" type="submit" disabled>Loading trained model…</button>
+        </form>
+        <p id="status" role="status" class="muted">Downloading the trained classifier once. No account needed.</p>
+        <section id="result" class="result" aria-live="polite" hidden>
+          <div class="result-top"><div><div class="eyebrow">MODEL PREDICTION</div><h2 id="prediction"></h2></div><span id="confidence" class="confidence"></span></div>
+          <div id="distribution" class="distribution"></div>
+          <p class="muted small">Relative confidence comes from SVM margins. It is not a calibrated probability.</p>
+          <h3>Influential text patterns</h3><div id="evidence" class="evidence"></div>
+          <p id="reference-note" class="reference-note" hidden></p>
+        </section>
+      </section>
+      <aside class="panel model-panel" aria-labelledby="model-title">
+        <div class="eyebrow">MEASURED, NOT ASSUMED</div><h2 id="model-title">The model behind the label</h2>
+        <div class="metrics"><div><strong id="macro-f1">76.5%</strong><span>Test macro F1</span></div><div><strong id="accuracy">76.6%</strong><span>Test accuracy</span></div></div>
+        <dl><dt>Approach</dt><dd>Character 3–5 gram TF-IDF + linear SVM</dd><dt>Training resource</dt><dd>NaijaSenti Hausa · human annotations</dd><dt>Final training examples</dt><dd>16,849 after model selection</dd><dt>Held-out test examples</dt><dd>5,303</dd></dl>
+        <div class="notice"><strong>Research prototype</strong><p>Neutral sentiment, sarcasm, mixed opinions, spelling variation, and unfamiliar domains remain difficult. Review predictions in context.</p></div>
+        <p class="muted small">This public app uses the exported learned weights of the same Python model. The source repository contains the full training and evaluation workflow.</p>
+      </aside>
+    </div>
+    <section class="details"><details><summary>How the classifier works</summary><p>The model breaks words into character patterns, weights them with TF-IDF, and applies a linear support-vector machine trained on Hausa sentiment labels. Six configurations were compared on validation macro F1 before the winner was refitted and tested. It does not call a chatbot or a hosted classifier.</p></details><details><summary>Data, privacy, and limitations</summary><p>NaijaSenti contains naturally occurring social-media messages, with dataset labels supplied by human annotators. It is released under CC BY 4.0. Your input is processed in this browser; this app does not send it to a prediction server. Results describe one dataset, rather than every Hausa variety or use case. The model is intended for education and low-stakes research.</p><a href="https://github.com/hausanlp/NaijaSenti">Dataset and attribution ↗</a></details></section>
+  </main>
+  <footer>HausaLens · Individual African NLP capstone <span><a href="https://github.com/Mahamatbt/summative/blob/main/MODEL_CARD.md">Model card</a> · <a href="https://github.com/Mahamatbt/summative/blob/main/DATA_CARD.md">Data card</a></span></footer>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>

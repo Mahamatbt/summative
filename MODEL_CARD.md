@@ -9,6 +9,8 @@
 - **Training data:** 16,849 NaijaSenti Hausa train + validation examples after model selection
 - **Artifact:** `outputs/models/hausalens.joblib`
 - **External inference services:** none
+- **Public application:** https://mahamatbt.github.io/summative/
+- **Deployment:** browser inference using exported learned vocabulary, IDF values, class coefficients, and intercepts; Python Streamlit remains available locally.
 
 ## Selection and evaluation
 
@@ -37,6 +39,8 @@ The artifact is intended for education, reproducible NLP experimentation, and lo
 Do not use the model for surveillance, moderation without human review, profiling, employment, credit, healthcare, policing, political targeting, or any decision that affects a person’s rights or opportunities. Do not interpret the relative confidence score as a calibrated probability.
 
 ## Known limitations
+
+The released training and validation partitions share 215 normalized texts. Original model selection preserves those partitions and may yield optimistic validation scores. A separate validation-only sensitivity comparison excludes those texts; the final test set has no normalized text matches with either partition. Browser/Python implementation parity is checked on all 5,303 test examples plus nine edge cases without changing model selection or training.
 
 Neutral text is the largest error source. Performance can degrade with other domains, new slang, long conversational context, sarcasm, code-switching patterns unlike the training data, or spelling conventions absent from the corpus. The test set was not independently re-annotated, and no native-speaker error audit was conducted for this capstone.
 

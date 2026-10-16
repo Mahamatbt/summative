@@ -1,0 +1,7 @@
+model,validation_examples,excluded_overlap,accuracy,macro_f1
+Character (3-5) + Linear SVM,2462,215,0.753452,0.754393
+Hybrid without emoji,2462,215,0.750203,0.751457
+Hybrid word+character SVM,2462,215,0.750203,0.751263
+Word (1-2) + Linear SVM,2462,215,0.725426,0.726212
+Word unigram + NB,2462,215,0.700244,0.702067
+Majority baseline,2462,215,0.350122,0.172884

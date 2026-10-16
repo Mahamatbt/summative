@@ -22,5 +22,9 @@ Rows with missing text or labels would be removed, and exact duplicate rows are 
 
 ## Risks and limitations
 
+The reproducible audit (`python scripts/audit_data.py`) found no missing rows or within-split exact or normalized duplicates. It did find **215 normalized text matches between training and validation**, so preserving the published partitions does not establish complete training/validation independence. There were **zero normalized training/test and validation/test matches**. `scripts/validate_selection.py` reports the same six configurations on the 2,462 validation texts absent from training, as a sensitivity analysis. It does not change the deployed model or tune against the test labels.
+
+Raw split TSVs are downloaded from the official source and ignored by Git. Test prediction/error CSVs and quoted qualitative examples do contain released test text for reproducible analysis and remain subject to the dataset's CC BY 4.0 terms.
+
 Tweets can contain personal, political, religious, sarcastic, offensive, or context-dependent language. Although account handles are normalized in the model pipeline, the raw dataset should be handled carefully. The corpus represents a particular platform and time period, and is not a representative sample of all Hausa speakers or varieties. Labels compress mixed and contextual affect into three classes. Dataset annotations and downstream predictions can both be wrong.
 

@@ -1,0 +1,35 @@
+{
+  "url": "https://mahamatbt.github.io/summative/",
+  "checks": [
+    {
+      "case": "positive",
+      "prediction": "Positive",
+      "passed": true
+    },
+    {
+      "case": "neutral",
+      "prediction": "Neutral",
+      "passed": true
+    },
+    {
+      "case": "negative",
+      "prediction": "Negative",
+      "passed": true
+    },
+    {
+      "case": "failure",
+      "prediction": "Negative",
+      "passed": true
+    },
+    {
+      "case": "blank-input validation",
+      "passed": true
+    },
+    {
+      "case": "mobile layout",
+      "passed": true
+    }
+  ],
+  "browser_errors": [],
+  "video_created": false
+}

@@ -5,8 +5,8 @@ type: software
 version: 1.0.0
 date-released: 2026-09-25
 license: MIT
-repository-code: "https://github.com/Mahamatbt/hausalens"
-url: "https://hausalens.streamlit.app"
+repository-code: "https://github.com/Mahamatbt/summative"
+url: "https://mahamatbt.github.io/summative/"
 keywords:
   - Hausa
   - sentiment analysis

@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -39,15 +40,20 @@ INK = colors.HexColor("#17251B")
 MUTED = colors.HexColor("#5D6A60")
 RED = colors.HexColor("#A64B35")
 
-GITHUB = "https://github.com/Mahamatbt/hausalens"
-LIVE = "https://hausalens.streamlit.app"
-VIDEO = "https://github.com/Mahamatbt/hausalens/raw/main/demo/hausalens_demo.mp4"
+GITHUB = "https://github.com/Mahamatbt/summative"
+LIVE = "https://mahamatbt.github.io/summative/"
 
 
 def register_fonts() -> None:
-    pdfmetrics.registerFont(TTFont("ArialU", "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"))
-    pdfmetrics.registerFont(TTFont("ArialB", "/System/Library/Fonts/Supplemental/Arial Bold.ttf"))
-    pdfmetrics.registerFont(TTFont("ArialI", "/System/Library/Fonts/Supplemental/Arial Italic.ttf"))
+    mac = Path("/System/Library/Fonts/Supplemental")
+    if (mac / "Arial Unicode.ttf").exists():
+        paths = [mac / "Arial Unicode.ttf", mac / "Arial Bold.ttf", mac / "Arial Italic.ttf"]
+    else:
+        from matplotlib import get_data_path
+        fonts = Path(get_data_path()) / "fonts/ttf"
+        paths = [fonts / "DejaVuSans.ttf", fonts / "DejaVuSans-Bold.ttf", fonts / "DejaVuSans-Oblique.ttf"]
+    for name, path in zip(["ArialU", "ArialB", "ArialI"], paths):
+        pdfmetrics.registerFont(TTFont(name, str(path)))
 
 
 def styles():
@@ -97,7 +103,7 @@ def later_page(canvas, doc) -> None:
 
 
 def p(text, style):
-    return Paragraph(text, style)
+    return Paragraph(str(text).replace("\u2011", "-").replace("\u2013", "-").replace("\u2014", "-"), style)
 
 
 def bullet(text, s):
@@ -154,7 +160,7 @@ def kpis(items, s):
     return table
 
 
-def build() -> None:
+def build(video_url: str | None = None) -> None:
     register_fonts()
     s = styles()
     metrics = json.loads((ROOT / "outputs" / "test_metrics.json").read_text())
@@ -181,16 +187,21 @@ def build() -> None:
     story += [p("HausaLens", s["cover_title"]), p("Lightweight sentiment classification for Hausa social-media text", s["cover_sub"])]
     story += [Spacer(1, 0.35 * cm), HRFlowable(width="36%", thickness=3, color=GOLD, hAlign="LEFT"), Spacer(1, 0.4 * cm)]
     story += [p("A reproducible comparison of six supervised classifiers using the human-annotated NaijaSenti corpus, with held-out evaluation, error analysis, and an interactive deployment.", s["cover_sub"])]
-    story += [Spacer(1, 2.0 * cm), p("Project type  ·  Text Classification for an African Language<br/>Language  ·  Hausa<br/>Task  ·  Positive / Neutral / Negative sentiment<br/>Report date  ·  25 September 2026", s["cover_meta"])]
+    story += [Spacer(1, 2.0 * cm), p("Project type  ·  Text Classification for an African Language<br/>Language  ·  Hausa<br/>Task  ·  Positive / Neutral / Negative sentiment<br/>Report date  ·  16 October 2026", s["cover_meta"])]
     story += [PageBreak()]
 
     story += [p("Project links", s["h1"]), HRFlowable(width="100%", thickness=1.8, color=GOLD, spaceAfter=10)]
-    for label, url in [("GitHub repository", GITHUB), ("Live system", LIVE), ("Demo video", VIDEO)]:
+    links = [("GitHub repository", GITHUB), ("Live system", LIVE)]
+    if video_url:
+        links.append(("Demo video", video_url))
+    for label, url in links:
         story.append(p(f"<b>{label}:</b> <link href='{url}' color='#2E6A3E'>{url}</link>", s["link"]))
-    story += [Spacer(1, 0.3 * cm), p("If public hosting is unavailable at submission time, the repository includes the trained 1.3 MB model and exact local run instructions; the interface requires no external inference API.", s["small"])]
+    if not video_url:
+        story.append(p("<b>Demo video:</b> Pending the student's own 10-15 minute recording. This report does not claim that the video has been submitted. Add its accessible URL before final submission.", s["link"]))
+    story += [Spacer(1, 0.3 * cm), p("The public system is hosted on GitHub Pages. The repository also includes the trained Python model and local Streamlit instructions. The student's personal video and individual defense remain to be completed.", s["small"])]
     story += [p("Abstract", s["h2"])]
     story += [p(
-        "This project investigates three-class sentiment classification for informal Hausa social-media text. The study uses 22,152 naturally occurring, human-annotated tweets from the open NaijaSenti release: 14,172 training, 2,677 validation, and 5,303 test items. Six supervised configurations were compared, ranging from a majority baseline and word TF-IDF with Multinomial Naive Bayes to word-, character-, and hybrid TF-IDF representations with linear support-vector machines. The character 3–5 gram model achieved the best validation macro-F1 (0.7698), so it was refit on training plus validation data and evaluated once on the untouched test set. It reached 0.7658 accuracy and 0.7649 macro-F1. Positive sentiment was easiest (F1 0.8446), while neutral sentiment was hardest (F1 0.7044). Descriptive error slices show elevated error rates for negation-marked and question-like text. The final model is deployed through a transparent Streamlit interface that runs local inference and exposes influential character patterns. Results show that a compact, CPU-friendly statistical model can provide a credible Hausa NLP baseline, though it remains below stronger Afrocentric transformer benchmarks and should not be used for high-impact decisions.", s["body"])]
+        "This project investigates three-class sentiment classification for informal Hausa social-media text. The study uses 22,152 naturally occurring, human-annotated tweets from the open NaijaSenti release: 14,172 training, 2,677 validation, and 5,303 test items. Six configurations compare a majority baseline and word TF-IDF with Multinomial Naive Bayes against word-, character-, and hybrid TF-IDF representations with linear support-vector machines. Character 3-5 grams achieved the best original validation macro-F1 (0.7698), followed by 0.7658 test accuracy and 0.7649 test macro-F1 after refitting on train plus validation. A quality audit found 215 train/validation text overlaps; an overlap-free validation sensitivity check still ranks the character model first at 0.7544. No normalized training/test text overlap was found. Positive sentiment was easiest (F1 0.8446), while neutral was hardest (F1 0.7044). The model is publicly deployed through a browser interface using exported learned parameters, with numerical parity verified against Python. A local Streamlit alternative is retained. The findings support a compact Hausa sentiment baseline while exposing clear limitations in contextual interpretation.", s["body"])]
     story += [Spacer(1, 0.25 * cm), kpis([
         ("22,152", "HUMAN-ANNOTATED ITEMS"),
         ("0.7649", "TEST MACRO-F1"),
@@ -210,6 +221,8 @@ def build() -> None:
         "Sentiment classification assigns an opinion-bearing text to categories such as positive, neutral, or negative. It is useful for summarizing public feedback, monitoring service quality, and studying online discussion, but most datasets and production tools prioritize high-resource languages. NaijaSenti was introduced to address this imbalance for Hausa, Igbo, Nigerian Pidgin, and Yorùbá, using manually annotated Twitter data and documenting extensive multilingual and code-mixed usage [1]. AfriSenti later broadened shared-task evaluation to 14 African languages [2].", s["body"])]
     story += [p(
         "Hausa is a consequential case because users produce substantial informal text online, yet spelling variation, abbreviated writing, borrowed English expressions, religious phrases, emojis, and missing conversational context complicate sentiment analysis. The problem is not merely whether a classifier can return a label; it is whether the complete workflow is reproducible, whether model selection is isolated from test evaluation, and whether failures are examined rather than hidden behind a single score.", s["body"])]
+    story += [p(
+        "The intended users are researchers, students, and teams exploring aggregate sentiment in Hausa feedback. The application supports low-stakes research and learning. Generalization to customer service, news, or other domains is a motivation for future evaluation, rather than an established result. This is the text-classification option; the assignment's restriction on selecting an unsupported translation direction applies to its separate machine-translation option.", s["body"])]
     story += [p("Objective and research questions", s["h2"])]
     for item in [
         "RQ1 — How much does a learned classifier improve over a majority-class baseline on the fixed NaijaSenti Hausa validation split?",
@@ -225,7 +238,7 @@ def build() -> None:
     story += [p(
         "Muhammad et al. introduced NaijaSenti as a large, open sentiment resource for four Nigerian languages. Their collection procedure combined language-specific stop words, emojis, and translated sentiment lexicons to retrieve candidates, followed by human annotation. They reported substantial code-mixing and evaluated multilingual pretrained language models. On Hausa, AfriBERTa-large achieved 81.0 weighted F1 in their reported benchmark, outperforming mBERT and XLM-R-base in that table [1]. This establishes a useful upper reference, but it is not a directly replicated score here because the released files used in this project contain different split counts from the early LREC table.", s["body"])]
     story += [p(
-        "The AfriSenti-SemEval shared task formalized monolingual, multilingual, and zero-shot sentiment evaluation across 14 African languages and attracted dozens of submissions. Top systems typically fine-tuned Afrocentric or multilingual transformers; the organizers emphasized macro-F1 for class-balanced comparison [2]. Ogueji et al. showed that AfriBERTa, trained on less than 1 GB of text spanning 11 African languages, could be competitive with larger multilingual models on several low-resource tasks [3]. These studies motivate future transformer experiments while also highlighting their compute and deployment cost.", s["body"])]
+        "The AfriSenti-SemEval shared task formalized monolingual, multilingual, and zero-shot sentiment evaluation across 14 African languages and attracted dozens of submissions. The organizers reported weighted F1 for the shared-task systems [2]. This project instead selects on macro-F1 and reports weighted F1 separately; those measures must not be conflated. Ogueji et al. investigated AfriBERTa, a compact multilingual model for African-language tasks [3]. These studies motivate a future Transformer comparison but are existing research, not models fine-tuned in this project.", s["body"])]
     story += [p(
         "Classical representations remain relevant when reproducibility, speed, and compact deployment matter. Keinan and Hacohen-Kerner tested word and character TF-IDF n-grams alongside classical and deep models in AfriSenti, demonstrating that n-gram baselines belong in a serious experimental comparison rather than being dismissed [4]. Linear support-vector machines construct maximum-margin decision boundaries in high-dimensional feature spaces [5], making them well matched to sparse TF-IDF text vectors. HausaLens therefore treats a compact linear model as a deliberate, testable design choice, not as a claim of state-of-the-art performance.", s["body"])]
 
@@ -254,6 +267,9 @@ def build() -> None:
         story.append(bullet(item, s))
     story += [p(
         "The corpus is close to class balanced, so accuracy is reported but macro-F1 is the primary model-selection metric. Macro averaging gives each class equal weight and therefore exposes weak neutral-class performance that accuracy alone can conceal.", s["body"])]
+    story += [p("3.3 Quality audit and split overlap", s["h2"])]
+    story += [p(
+        "The final reproducible audit found no missing text/label rows, no exact duplicate rows within a split, and no normalized duplicate texts within a split. However, training and validation share 215 normalized texts, about 8.0% of validation. Preserving publisher boundaries therefore did not make the original validation comparison fully independent. Training/test and validation/test have zero normalized text matches. This check covers exact normalized overlap, not semantic near-duplicates or shared conversational context. The original experiment is retained and the validation overlap is investigated separately in Section 5.", s["body"])]
 
     story += section("Methodology", s, 4)
     story += [p("4.1 Models", s["h2"])]
@@ -271,6 +287,10 @@ def build() -> None:
         "TF-IDF scales an n-gram by its frequency in the current document and by the inverse frequency of documents containing it. Word models use unigrams or 1–2 grams. Character models use the scikit-learn char_wb analyzer, which creates 3–5 character sequences within padded word boundaries [7]. Terms appearing fewer than two documents for word features or three documents for character features are omitted. Sublinear term frequency is enabled.", s["body"])]
     story += [p(
         "The linear SVM uses C = 1.5, class-balanced weights, and at most 5,000 iterations. A one-versus-rest decision function is learned for the three labels. The interface applies softmax to the three margins only to create an intuitive relative-confidence display; this value is explicitly not described as a calibrated probability. Local feature evidence is computed by multiplying the input’s non-zero TF-IDF values by the coefficient vector for the predicted class and ranking positive contributions.", s["body"])]
+    story += [p(
+        "For a feature count c, sublinear term frequency is 1 + log(c). Smoothed inverse document frequency is log((1 + N)/(1 + df)) + 1. The resulting vector is L2-normalized. Each class score is its learned intercept plus the dot product of the feature vector and class coefficients. Prediction selects the highest score. Input is a Hausa text string; output is one of three labels, margin-derived relative scores, and feature contributions. Character features are capped at 65,000; the fitted final vocabulary contains 43,806. Naive Bayes uses alpha = 0.7. These are fixed configurations, not an exhaustive hyperparameter search. No pretrained embedding or Transformer is used.", s["body"])]
+    story += [p(
+        "The so-called emoji-removal experiment removes characters with code points of 10,000 or above. This is an approximate high-code-point ablation, not a complete Unicode emoji detector; some emoji sequences may remain and non-emoji characters may also be removed. Its small performance difference cannot establish the causal value of emoji.", s["body"])]
     story += [p("4.2 Evaluation protocol", s["h2"])]
     story += [p(
         "Each candidate is fitted on 14,172 training items and evaluated on the fixed 2,677-item validation set. The configuration with the highest validation macro-F1 is selected. Only then is the winner refit on training plus validation (16,849 items) and evaluated once on the untouched 5,303-item test set. Reported metrics are accuracy, macro precision, macro recall, macro-F1, weighted-F1, per-class precision/recall/F1, and a confusion matrix. No hyperparameter search or model choice uses the test labels.", s["body"])]
@@ -283,9 +303,17 @@ def build() -> None:
             f"{row['macro_recall']:.4f}", f"{row['macro_f1']:.4f}", f"{row['train_seconds']:.2f}",
         ])
     story += [make_table(result_rows, [5.6*cm, 2.0*cm, 2.0*cm, 2.0*cm, 2.1*cm, 1.7*cm], alignments=["LEFT","RIGHT","RIGHT","RIGHT","RIGHT","RIGHT"], font_size=7.1), p("Table 3. Validation results. Timing is descriptive for one local run, not a hardware-normalized benchmark.", s["caption"])]
-    story += [Image(str(ROOT / "outputs" / "figures" / "experiment_comparison.png"), width=15.5*cm, height=9.45*cm), p("Figure 1. Validation macro-F1 for all six configurations.", s["caption"])]
+    story += [Image(str(ROOT / "outputs" / "figures" / "experiment_comparison.png"), width=14.2*cm, height=8.68*cm), p("Figure 1. Validation macro-F1 for all six configurations.", s["caption"])]
     story += [p(
         "All learned models substantially exceed the majority macro-F1 of 0.1672. Word-unigram Naive Bayes reaches 0.7163; replacing it with word 1–2 grams and a linear SVM adds 2.69 points. Character n-grams add another 2.66 points and win at 0.7698. The hybrid model does not improve on character features alone, and its no-emoji ablation differs by only 0.0002 macro-F1 from the full hybrid. More features were therefore not automatically better. This answers RQ1–RQ3 and justifies selecting the character model.", s["body"])]
+    sensitivity = pd.read_csv(ROOT / "outputs/validation_sensitivity.csv")
+    story += [p("Validation sensitivity: remove training-text overlap", s["h2"])]
+    sensitivity_rows = [["Configuration", "Validation items", "Macro-F1"]]
+    for _, row in sensitivity.iterrows():
+        sensitivity_rows.append([row["model"], str(int(row["validation_examples"])), f"{row['macro_f1']:.4f}"])
+    story += [make_table(sensitivity_rows, [9.2*cm, 3.3*cm, 3.3*cm], font_size=7.4)]
+    story += [p(
+        "Supplementary comparison: exclude the 215 validation texts that normalize to training texts, leaving 2,462 items, then fit the same six configurations on the original training data. Character SVM still ranks first (0.7544), ahead of the approximate no-emoji hybrid (0.7515), full hybrid (0.7513), word SVM (0.7262), Naive Bayes (0.7021), and majority baseline (0.1729). The lower scores show that the original validation result was optimistic. This is a validation-only sensitivity analysis; it does not change the already selected deployed artifact or tune against test labels. Small differences are not claimed to be statistically significant.", s["body"])]
     story += [p("5.1 Held-out test performance", s["h2"])]
     cr = metrics["classification_report"]
     class_rows = [["Class", "Precision", "Recall", "F1", "Support"]]
@@ -296,7 +324,7 @@ def build() -> None:
     story += [kpis([("0.7658", "TEST ACCURACY"), ("0.7649", "TEST MACRO-F1"), ("0.8446", "POSITIVE F1"), ("0.7044", "NEUTRAL F1")], s)]
     story += [Spacer(1, 0.3*cm), Image(str(ROOT / "outputs" / "figures" / "per_class_f1.png"), width=14.6*cm, height=7.84*cm), p("Figure 2. Held-out F1 by class. Macro-F1 makes the neutral-class weakness visible.", s["caption"])]
     story += [Spacer(1, 0.35*cm), p(
-        "The selected model transfers cleanly from validation to test: macro-F1 declines by only 0.0049. Positive sentiment is recognized most reliably. Neutral recall is 0.6574, meaning roughly one third of true neutral items are assigned another class. Published Afrocentric transformer systems report higher Hausa scores around 0.81 weighted F1 [1, 8], so HausaLens should be understood as a compact baseline with deployment advantages, not a new state of the art.", s["body"])]
+        "Positive sentiment is recognized most reliably. Neutral recall is 0.6574, meaning roughly one third of true neutral items are assigned another class. The 0.0049 gap between original validation and final test macro-F1 is not proof of stable generalization: the validation overlap and the different training sizes complicate that interpretation. Precision measures correctness among a class's predictions; recall measures coverage of its reference items. F1 = 2PR/(P + R), with zero-division conventions as in scikit-learn. Macro-F1 averages the three class F1 scores equally; weighted F1 weights them by reference support. Published Hausa Transformer figures use different data versions and sometimes different averaging, so they are context rather than a replicated head-to-head benchmark [1, 8].", s["body"])]
 
     story += section("Error Analysis and Discussion", s, 6)
     story += [Image(str(ROOT / "outputs" / "figures" / "confusion_matrix.png"), width=13.8*cm, height=10.73*cm), p("Figure 3. Held-out confusion matrix (n = 5,303).", s["caption"])]
@@ -336,18 +364,20 @@ def build() -> None:
 
     story += section("Deployment", s, 7)
     story += [p(
-        "The final system is a Streamlit application. It loads the 1.3 MB serialized scikit-learn pipeline at startup, transforms user text locally, predicts one of three labels, and displays a relative confidence derived from SVM margins. It also lists the input-specific character patterns with the largest positive contributions to the predicted class. This explanation is faithful to the linear decision function but should not be mistaken for a semantic rationale.", s["body"])]
+        "The public system is deployed on GitHub Pages at the live-system link near the start of this report [11]. The build exports the actual learned vocabulary, IDF values, SVM coefficients, and intercepts from the Python joblib artifact into JSON. A JavaScript runtime reproduces normalization, character n-gram counting, sublinear TF-IDF, L2 normalization, linear class scores, and relative-confidence calculation. Text is processed in the visitor's browser. The original Python Streamlit application remains available locally [10]. Both interfaces show influential character patterns rather than claiming semantic understanding.", s["body"])]
     deployment_rows = [
         ["Layer", "Implementation", "Reproducibility role"],
         ["Data", "Official TSV files + downloader", "Row-count validation; raw data not duplicated in repo"],
         ["Training", "scikit-learn pipelines", "Prevents vocabulary leakage across splits"],
-        ["Artifact", "Compressed joblib, ~1.3 MB", "Same fitted model used by evaluation and app"],
-        ["Interface", "Streamlit", "Text input, examples, prediction, evidence, model card"],
-        ["Testing", "pytest + smoke checks", "Normalization, inference schema, app startup"],
+        ["Artifact", "Joblib (~1.3 MB); JSON (~3.8 MB)", "Same learned parameters in Python and JavaScript"],
+        ["Interface", "GitHub Pages; local Streamlit", "Text, four examples, prediction, evidence, model card"],
+        ["Testing", "pytest + numerical parity + browser", "Model equivalence, real interactions, mobile layout"],
     ]
     story += [make_table(deployment_rows, [3.0*cm, 5.2*cm, 7.6*cm], font_size=7.5), p("Table 7. Deployment architecture.", s["caption"])]
     story += [p(
-        "Responsible-use notes are visible inside the interface. The app does not call a commercial model API and does not intentionally store input. Because relative confidence is uncalibrated, the label is accompanied by a precise warning. Public hosting can reproduce the application from requirements.txt and app.py; local fallback instructions are in the repository README.", s["body"])]
+        "Implementation parity was checked on all 5,303 test texts plus nine edge cases: zero label mismatches, zero normalization mismatches, and maximum absolute SVM-margin difference below 1e-10. This is a numerical implementation check without model tuning or new performance claims. The deployment workflow repeats parity before publication. Automated Chrome checks on the public URL passed positive, neutral, negative, known-error, blank-input, and mobile-layout paths with no JavaScript errors. Screenshot evidence is versioned. No demo video was generated; the student will record it independently.", s["body"])]
+    story += [p(
+        "The interface displays responsible-use notes and labels the margin-derived confidence as uncalibrated. User text is not sent to a prediction service. The roughly 3.8 MB JSON download is larger than the compressed Python artifact, but inference requires no Python server or commercial API. Source pushes to main trigger the GitHub Actions Pages workflow. Local reproduction and fallback instructions are in the README.", s["body"])]
 
     story += section("Limitations and Future Work", s, 8)
     limitations = [
@@ -356,7 +386,8 @@ def build() -> None:
         "Labels: a single positive/neutral/negative label cannot express mixed affect, sarcasm, stance toward multiple targets, or annotator disagreement.",
         "Method: linear character features do not represent long-range context or compositional negation. Relative SVM confidence is not probability calibration.",
         "Evaluation: the project did not conduct cross-domain, temporal, dialectal, fairness, robustness, or native-speaker acceptability studies.",
-        "Privacy and governance: public tweets can still contain sensitive content. The raw files are downloaded from the official source and excluded from the project repository.",
+        "Validation independence: 215 normalized texts overlap training and validation. A supplementary overlap-free comparison confirms the character model's ranking, but does not erase the original design limitation.",
+        "Privacy and governance: public tweets can still contain sensitive content. Raw split files are excluded, but test prediction/error CSVs and quoted examples contain released test text and retain dataset attribution obligations.",
     ]
     story += [bullet(x, s) for x in limitations]
     story += [p("Prioritized future work", s["h2"])]
@@ -387,6 +418,8 @@ def build() -> None:
         "[8] Salahudeen, S. A., Lawan, F. I., Wali, A. M., et al. (2023). HausaNLP at SemEval-2023 Task 12: Leveraging African Low Resource TweetData for Sentiment Analysis. SemEval-2023, 58–66. https://aclanthology.org/2023.semeval-1.6/",
         "[9] Pedregosa, F., Varoquaux, G., Gramfort, A., et al. (2011). Scikit-learn: Machine Learning in Python. Journal of Machine Learning Research, 12, 2825–2830. https://jmlr.org/papers/v12/pedregosa11a.html",
         "[10] Streamlit. (2026). Streamlit documentation. https://docs.streamlit.io/ (accessed 25 September 2026).",
+        "[11] GitHub. (2026). Using custom workflows with GitHub Pages. https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages (accessed 16 October 2026).",
+        "[12] ReportLab. (2026). ReportLab documentation. https://docs.reportlab.com/ (accessed 16 October 2026).",
     ]
     for ref in references:
         story.append(p(ref, s["small"]))
@@ -398,9 +431,13 @@ def build() -> None:
         ["1", "python scripts/download_data.py", "Validated official train/dev/test TSV files"],
         ["2", "python scripts/train.py", "Six validation runs, final test metrics, model, predictions, figures"],
         ["3", "python scripts/analyze_errors.py", "Error slices and length analysis"],
+        ["3a", "python scripts/audit_data.py", "Missing rows, duplicates, normalized split overlap"],
+        ["3b", "python scripts/validate_selection.py", "Overlap-free validation sensitivity comparison"],
         ["4", "pytest -q", "Automated normalization and inference tests"],
         ["5", "streamlit run app.py", "Interactive local web interface"],
         ["6", "python scripts/build_report.py", "This report from measured outputs"],
+        ["7", "python scripts/export_web_model.py", "Learned parameters for public browser inference"],
+        ["8", "python scripts/verify_web_model.py", "Python/JavaScript numerical-equivalence evidence"],
     ]
     story += [make_table(workflow, [1.2*cm, 6.2*cm, 8.4*cm], font_size=7.5), p("Table A1. Reproduction sequence.", s["caption"])]
     story += [p("A.2 Runtime and artifacts", s["h2"])]
@@ -412,24 +449,20 @@ def build() -> None:
         "Implemented: data validation and preprocessing pipeline; six model configurations; metric computation; selection protocol; held-out evaluation; error slicing; visualizations; local explanation utility; Streamlit interface; tests; documentation; PDF builder; demo assets.",
         "Reused with attribution: NaijaSenti annotations and split files; scikit-learn estimators and vectorizers; Streamlit framework; ReportLab and plotting libraries; published benchmark findings.",
         "Not used: synthetic training data, commercial sentiment APIs, hosted chatbot inference, or manual alteration of test predictions.",
+        "AI assistance: AI tools assisted coding, documentation, deployment, and verification. The student is responsible for understanding and checking the work, recording the 10-15 minute demonstration, and answering the individual technical defense.",
+        "Submission status: source code and public application are available at the links in this report. The personal demonstration video is pending and must be linked before final submission. The script's --video-url option rebuilds the report with the verified video URL.",
     ]:
         story.append(bullet(item, s))
-    story += [p("A.4 Verification checklist", s["h2"])]
-    checks = [
-        "Dataset source, version difference, license, and exact counts documented",
-        "Validation used for model choice; test evaluated once after selection",
-        "Accuracy, precision, recall, macro-F1, weighted-F1, and per-class metrics reported",
-        "Successful and unsuccessful examples included without fabricated translations",
-        "Limitations, responsible use, and non-calibrated confidence disclosed",
-        "Model and application run without an external inference API",
-        "Repository contains code for data, training, evaluation, inference, tests, and report",
-    ]
-    for check in checks:
-        story.append(bullet("✓ " + check, s))
+    story.append(p("Verification evidence: outputs/data_audit.json, outputs/validation_sensitivity.csv, outputs/web_parity.json, and outputs/deployment_verification.json. The complete submission checklist and personal recording guide are linked from the README.", s["small"]))
 
     doc.build(story)
     print(OUT)
 
 
 if __name__ == "__main__":
-    build()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--video-url", help="Accessible URL of the student's own final demonstration")
+    args = parser.parse_args()
+    if args.video_url and not args.video_url.startswith("https://"):
+        parser.error("--video-url must be a public HTTPS URL")
+    build(args.video_url)

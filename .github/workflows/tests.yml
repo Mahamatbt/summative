@@ -16,8 +16,10 @@ jobs:
       - run: pip install -r requirements.txt pytest matplotlib seaborn
       - run: pytest -q
       - run: python scripts/download_data.py
+      - run: python scripts/audit_data.py
       - run: MPLBACKEND=Agg python scripts/train.py
       - run: MPLBACKEND=Agg python scripts/analyze_errors.py
+      - run: python scripts/validate_selection.py
       - name: Confirm reported result remains reproducible
         run: |
           python - <<'PY'

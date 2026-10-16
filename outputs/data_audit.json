@@ -1,0 +1,44 @@
+{
+  "train": {
+    "rows": 14172,
+    "missing_text_or_label": 0,
+    "duplicate_rows": 0,
+    "normalized_duplicate_texts_within_split": 0,
+    "median_whitespace_tokens": 11.0,
+    "label_counts": {
+      "neutral": 4912,
+      "positive": 4687,
+      "negative": 4573
+    }
+  },
+  "dev": {
+    "rows": 2677,
+    "missing_text_or_label": 0,
+    "duplicate_rows": 0,
+    "normalized_duplicate_texts_within_split": 0,
+    "median_whitespace_tokens": 11.0,
+    "label_counts": {
+      "neutral": 896,
+      "negative": 894,
+      "positive": 887
+    }
+  },
+  "test": {
+    "rows": 5303,
+    "missing_text_or_label": 0,
+    "duplicate_rows": 0,
+    "normalized_duplicate_texts_within_split": 0,
+    "median_whitespace_tokens": 9.0,
+    "label_counts": {
+      "neutral": 1789,
+      "negative": 1759,
+      "positive": 1755
+    }
+  },
+  "normalized_text_overlap": {
+    "train_dev": 215,
+    "train_test": 0,
+    "dev_test": 0
+  },
+  "note": "Publisher splits are preserved. Train/dev overlap can inflate validation scores; no normalized train/test or dev/test overlap was found."
+}

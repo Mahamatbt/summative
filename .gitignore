@@ -10,3 +10,4 @@ demo/build/
 output/pdf/rendered/
 *.egg-info/
 web/model.json
+outputs/local_ui_verification.json

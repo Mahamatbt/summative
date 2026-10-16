@@ -19,8 +19,8 @@ SPACE_RE = re.compile(r"\s+")
 def normalize_text(text: str, *, remove_emoji: bool = False) -> str:
     """Apply conservative, reproducible normalization.
 
-    Case, Hausa characters, punctuation, hashtags, and emoji are retained because
-    they can carry sentiment. URLs and account names are replaced with stable tokens.
+    Text is lowercased; Hausa characters, punctuation, hashtags, and emoji are
+    retained because they can carry sentiment. URLs and account names are normalized.
     The optional emoji ablation is used only in one controlled experiment.
     """
 

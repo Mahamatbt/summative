@@ -1,8 +1,8 @@
 slice,present,items,errors,error_rate
 short_5_tokens_or_less,False,4068,979,0.240659
 short_5_tokens_or_less,True,1235,263,0.212955
-contains_negation_marker,False,4334,981,0.226350
-contains_negation_marker,True,969,261,0.269350
+contains_negation_marker,False,4333,981,0.226402
+contains_negation_marker,True,970,261,0.269072
 contains_question_cue,False,4944,1143,0.231189
 contains_question_cue,True,359,99,0.275766
 contains_non_ascii,False,4951,1172,0.236720

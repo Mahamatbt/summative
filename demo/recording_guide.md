@@ -1,5 +1,7 @@
 # Your personal 10-15 minute HausaLens demonstration
 
+**Recorded demonstration:** [Watch the student's video on YouTube](https://youtu.be/g8qN6C-GF6k). The guide below is retained as preparation notes and screen-sharing cues.
+
 Aim for about 13 minutes. Read the narration in your own voice and pause while demonstrating. The times include screen changes and interaction. Rehearse to check the final duration. No video has been generated for you.
 
 Open these before recording: the public app at https://mahamatbt.github.io/summative/, your repository at https://github.com/Mahamatbt/summative, DATA_CARD.md, src/hausalens/modeling.py, scripts/train.py, outputs/figures/experiment_comparison.png, outputs/figures/per_class_f1.png, outputs/figures/confusion_matrix.png, outputs/validation_sensitivity.csv, and MODEL_CARD.md.
@@ -130,6 +132,6 @@ Open these before recording: the public app at https://mahamatbt.github.io/summa
 >
 > My main finding is that the character SVM performed best among the six configurations tested, with 76.49 percent test macro F1. More features did not automatically help. The project taught me to connect model choices to validation evidence, analyze class-specific failures, and deploy the trained system while making its limitations visible. Thank you.
 
-## After recording
+## Published recording
 
-Upload your video with assessor-accessible permissions. Add its link to README.md, then run `python scripts/build_report.py --video-url "YOUR_ACCESSIBLE_VIDEO_URL"` and push the updated PDF. Verify that the final video is 10-15 minutes and that all shared links work while signed out.
+The student's video is published at https://youtu.be/g8qN6C-GF6k and linked from the README, report, submission checklist, and applications. Running `python scripts/build_report.py` preserves this video link in the PDF by default.

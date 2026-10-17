@@ -113,3 +113,5 @@ with st.expander("Responsible use and data"):
         "released in the NaijaSenti research dataset under CC BY 4.0. User input is processed for inference "
         "and is not intentionally stored by this app."
     )
+
+st.markdown("[Watch the student's project demonstration on YouTube](https://youtu.be/g8qN6C-GF6k)")

@@ -9,7 +9,7 @@ The intended users are researchers, students, and teams exploring aggregate sent
 - **GitHub repository:** [Mahamatbt/summative](https://github.com/Mahamatbt/summative)
 - **Live application:** [HausaLens on GitHub Pages](https://mahamatbt.github.io/summative/)
 - **PDF report:** [`output/pdf/hausalens_capstone_report.pdf`](output/pdf/hausalens_capstone_report.pdf)
-- **Demo video:** pending the student's own 10-15 minute recording. No replacement video has been generated.
+- **Demo video:** [Watch the student's HausaLens demonstration on YouTube](https://youtu.be/g8qN6C-GF6k)
 - **Recording guide:** [`demo/recording_guide.md`](demo/recording_guide.md)
 - **Submission checklist:** [`SUBMISSION_CHECKLIST.md`](SUBMISSION_CHECKLIST.md)
 
@@ -108,13 +108,13 @@ Open `http://localhost:8000`. Optional Chrome/Playwright interface checks can be
 
 ### Report and final video link
 
-Generate the report with `python scripts/build_report.py`. It uses Arial Unicode on macOS or DejaVu Sans on Linux. After recording and uploading your own video, rebuild it with:
+The student's recorded demonstration is available at **https://youtu.be/g8qN6C-GF6k**. Generate the report with `python scripts/build_report.py`; the video link is included by default. The report uses Arial Unicode on macOS or DejaVu Sans on Linux. To explicitly specify the video URL, run:
 
 ```bash
-python scripts/build_report.py --video-url "YOUR_ACCESSIBLE_VIDEO_URL"
+python scripts/build_report.py --video-url "https://youtu.be/g8qN6C-GF6k"
 ```
 
-Replace the pending video entry in this README with that same verified link, then commit and push the updated README and PDF. The report currently labels the personal video as pending.
+The README, PDF report, live application, and submission checklist link to the same recording. If a replacement video is uploaded, update these links and the default `VIDEO` value in `scripts/build_report.py`, then rebuild the PDF.
 
 ## Experiments
 
@@ -150,5 +150,5 @@ NaijaSenti is credited to Muhammad et al. (2022):
 
 The dataset is CC BY 4.0. Project source code is MIT licensed. Full academic references appear in the PDF report.
 
-AI assistance was used for coding, documentation, deployment, and verification. Existing resources are distinguished from the project implementation in the report. The student remains responsible for understanding and defending the submitted work and for recording the final demonstration.
+AI assistance was used for coding, documentation, deployment, and verification. Existing resources are distinguished from the project implementation in the report. The student recorded the final demonstration and remains responsible for understanding and defending the submitted work.
 

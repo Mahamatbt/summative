@@ -42,6 +42,7 @@ RED = colors.HexColor("#A64B35")
 
 GITHUB = "https://github.com/Mahamatbt/summative"
 LIVE = "https://mahamatbt.github.io/summative/"
+VIDEO = "https://youtu.be/g8qN6C-GF6k"
 
 
 def register_fonts() -> None:
@@ -160,7 +161,7 @@ def kpis(items, s):
     return table
 
 
-def build(video_url: str | None = None) -> None:
+def build(video_url: str = VIDEO) -> None:
     register_fonts()
     s = styles()
     metrics = json.loads((ROOT / "outputs" / "test_metrics.json").read_text())
@@ -187,18 +188,14 @@ def build(video_url: str | None = None) -> None:
     story += [p("HausaLens", s["cover_title"]), p("Lightweight sentiment classification for Hausa social-media text", s["cover_sub"])]
     story += [Spacer(1, 0.35 * cm), HRFlowable(width="36%", thickness=3, color=GOLD, hAlign="LEFT"), Spacer(1, 0.4 * cm)]
     story += [p("A reproducible comparison of six supervised classifiers using the human-annotated NaijaSenti corpus, with held-out evaluation, error analysis, and an interactive deployment.", s["cover_sub"])]
-    story += [Spacer(1, 2.0 * cm), p("Project type  ·  Text Classification for an African Language<br/>Language  ·  Hausa<br/>Task  ·  Positive / Neutral / Negative sentiment<br/>Report date  ·  16 October 2026", s["cover_meta"])]
+    story += [Spacer(1, 2.0 * cm), p("Project type  ·  Text Classification for an African Language<br/>Language  ·  Hausa<br/>Task  ·  Positive / Neutral / Negative sentiment<br/>Report date  ·  17 October 2026", s["cover_meta"])]
     story += [PageBreak()]
 
     story += [p("Project links", s["h1"]), HRFlowable(width="100%", thickness=1.8, color=GOLD, spaceAfter=10)]
-    links = [("GitHub repository", GITHUB), ("Live system", LIVE)]
-    if video_url:
-        links.append(("Demo video", video_url))
+    links = [("GitHub repository", GITHUB), ("Live system", LIVE), ("Demo video", video_url)]
     for label, url in links:
         story.append(p(f"<b>{label}:</b> <link href='{url}' color='#2E6A3E'>{url}</link>", s["link"]))
-    if not video_url:
-        story.append(p("<b>Demo video:</b> Pending the student's own 10-15 minute recording. This report does not claim that the video has been submitted. Add its accessible URL before final submission.", s["link"]))
-    story += [Spacer(1, 0.3 * cm), p("The public system is hosted on GitHub Pages. The repository also includes the trained Python model and local Streamlit instructions. The student's personal video and individual defense remain to be completed.", s["small"])]
+    story += [Spacer(1, 0.3 * cm), p("The public system is hosted on GitHub Pages. The repository includes the trained Python model and local Streamlit instructions. The student's recorded demonstration is available through the YouTube link above.", s["small"])]
     story += [p("Abstract", s["h2"])]
     story += [p(
         "This project investigates three-class sentiment classification for informal Hausa social-media text. The study uses 22,152 naturally occurring, human-annotated tweets from the open NaijaSenti release: 14,172 training, 2,677 validation, and 5,303 test items. Six configurations compare a majority baseline and word TF-IDF with Multinomial Naive Bayes against word-, character-, and hybrid TF-IDF representations with linear support-vector machines. Character 3-5 grams achieved the best original validation macro-F1 (0.7698), followed by 0.7658 test accuracy and 0.7649 test macro-F1 after refitting on train plus validation. A quality audit found 215 train/validation text overlaps; an overlap-free validation sensitivity check still ranks the character model first at 0.7544. No normalized training/test text overlap was found. Positive sentiment was easiest (F1 0.8446), while neutral was hardest (F1 0.7044). The model is publicly deployed through a browser interface using exported learned parameters, with numerical parity verified against Python. A local Streamlit alternative is retained. The findings support a compact Hausa sentiment baseline while exposing clear limitations in contextual interpretation.", s["body"])]
@@ -375,7 +372,7 @@ def build(video_url: str | None = None) -> None:
     ]
     story += [make_table(deployment_rows, [3.0*cm, 5.2*cm, 7.6*cm], font_size=7.5), p("Table 7. Deployment architecture.", s["caption"])]
     story += [p(
-        "Implementation parity was checked on all 5,303 test texts plus nine edge cases: zero label mismatches, zero normalization mismatches, and maximum absolute SVM-margin difference below 1e-10. This is a numerical implementation check without model tuning or new performance claims. The deployment workflow repeats parity before publication. Automated Chrome checks on the public URL passed positive, neutral, negative, known-error, blank-input, and mobile-layout paths with no JavaScript errors. Screenshot evidence is versioned. No demo video was generated; the student will record it independently.", s["body"])]
+        "Implementation parity was checked on all 5,303 test texts plus nine edge cases: zero label mismatches, zero normalization mismatches, and maximum absolute SVM-margin difference below 1e-10. This is a numerical implementation check without model tuning or new performance claims. The deployment workflow repeats parity before publication. Automated Chrome checks on the public URL passed positive, neutral, negative, known-error, blank-input, and mobile-layout paths with no JavaScript errors. Screenshot evidence is versioned. The student independently recorded and uploaded the demonstration linked at the start of this report.", s["body"])]
     story += [p(
         "The interface displays responsible-use notes and labels the margin-derived confidence as uncalibrated. User text is not sent to a prediction service. The roughly 3.8 MB JSON download is larger than the compressed Python artifact, but inference requires no Python server or commercial API. Source pushes to main trigger the GitHub Actions Pages workflow. Local reproduction and fallback instructions are in the README.", s["body"])]
 
@@ -449,8 +446,8 @@ def build(video_url: str | None = None) -> None:
         "Implemented: data validation and preprocessing pipeline; six model configurations; metric computation; selection protocol; held-out evaluation; error slicing; visualizations; local explanation utility; Streamlit interface; tests; documentation; PDF builder; demo assets.",
         "Reused with attribution: NaijaSenti annotations and split files; scikit-learn estimators and vectorizers; Streamlit framework; ReportLab and plotting libraries; published benchmark findings.",
         "Not used: synthetic training data, commercial sentiment APIs, hosted chatbot inference, or manual alteration of test predictions.",
-        "AI assistance: AI tools assisted coding, documentation, deployment, and verification. The student is responsible for understanding and checking the work, recording the 10-15 minute demonstration, and answering the individual technical defense.",
-        "Submission status: source code and public application are available at the links in this report. The personal demonstration video is pending and must be linked before final submission. The script's --video-url option rebuilds the report with the verified video URL.",
+        "AI assistance: AI tools assisted coding, documentation, deployment, and verification. The student recorded the personal demonstration and remains responsible for understanding and checking the submitted work and answering the individual technical defense.",
+        f"Submission resources: source code, the public application, and the student's recorded demonstration are linked at the start of this report. Demo video: {video_url}. The report generator preserves this video link by default; --video-url can override it for a replacement recording.",
     ]:
         story.append(bullet(item, s))
     story.append(p("Verification evidence: outputs/data_audit.json, outputs/validation_sensitivity.csv, outputs/web_parity.json, and outputs/deployment_verification.json. The complete submission checklist and personal recording guide are linked from the README.", s["small"]))
@@ -461,7 +458,7 @@ def build(video_url: str | None = None) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--video-url", help="Accessible URL of the student's own final demonstration")
+    parser.add_argument("--video-url", default=VIDEO, help="Accessible URL of the student's own final demonstration")
     args = parser.parse_args()
     if args.video_url and not args.video_url.startswith("https://"):
         parser.error("--video-url must be a public HTTPS URL")
